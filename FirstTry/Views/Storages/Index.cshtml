@@ -1,0 +1,124 @@
+﻿@model IEnumerable<FirstTry.storage>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@{ string ShowButton(string up, string down)
+    {
+        if (ViewData["sortOrder"] != null)
+        {
+
+            if (ViewData["sortOrder"].ToString() == up)
+            {
+                return HttpUtility.HtmlEncode("↑");
+            }
+            else if (ViewData["sortOrder"].ToString() == down)
+            {
+                return HttpUtility.HtmlEncode("↓");
+            }
+        }
+        return "";
+    }
+}
+
+@{ string GetSearchString(int index)
+    {
+        if (ViewBag.SearchStrings != null)
+        {
+            return ViewBag.SearchStrings[index];
+        }
+        return string.Empty;
+    }
+}
+
+@{ string GetAgregateSearchString()
+    {
+        if (ViewBag.SearchStrings != null)
+        {
+            return (ViewBag.SearchStrings as string[]).Aggregate((sum, next) => sum + '%' + next);
+        }
+        return string.Empty;
+    }
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+@using (Html.BeginForm("", "Storages", FormMethod.Get, new { id = "searchform" }))
+{
+
+}
+
+<input type="text" name="sortOrder" form="searchform" value="@ViewData["sortOrder"]" class="hidden" />
+
+<table class="table">
+    <tr>
+        <td>
+            <input type="text" name="SearchStrings" form="searchform" style="width: 100%" value="@GetSearchString(0)" />
+        </td>
+        <td>
+            <input type="text" name="SearchStrings" form="searchform" style="width: 100%" value="@GetSearchString(1)" />
+        </td>
+        <td>
+            <input type="text" name="SearchStrings" form="searchform" style="width: 100%" value="@GetSearchString(2)" />
+        </td>
+        <td>
+            <input type="text" name="SearchStrings" form="searchform" style="width: 100%" value="@GetSearchString(3)" />
+        </td>
+        <td>
+            <input type="text" name="SearchStrings" form="searchform" style="width: 100%" value="@GetSearchString(4)" />
+        </td>
+        <td>
+            <input type="submit" value="Search" form="searchform" />
+        </td>
+    </tr>
+    <tr>
+        <th>
+            @Html.ActionLink(@Html.DisplayNameFor(model => model.item_name).ToString() + @ShowButton("item_name", "item_name_desc"), "Index", new { sortOrder = ViewBag.item_nameSortParm, SearchStrings = GetAgregateSearchString() })
+        </th>
+        <th>
+            @Html.ActionLink(@Html.DisplayNameFor(model => model.count).ToString() + @ShowButton("count", "count_desc"), "Index", new { sortOrder = ViewBag.countSortParm, SearchStrings = GetAgregateSearchString() })
+        </th>
+        <th>
+            @Html.ActionLink(@Html.DisplayNameFor(model => model.price).ToString() + @ShowButton("price", "price_desc"), "Index", new { sortOrder = ViewBag.priceSortParm, SearchStrings = GetAgregateSearchString() })
+        </th>
+        <th>
+            @Html.ActionLink(@Html.DisplayNameFor(model => model.expiration_date).ToString() + @ShowButton("expiration_date", "expiration_date_desc"), "Index", new { sortOrder = ViewBag.expiration_dateSortParm, SearchStrings = GetAgregateSearchString() })
+        </th>
+        <th>
+            @Html.ActionLink(@Html.DisplayNameFor(model => model.is_written_off).ToString() + @ShowButton("is_written_off", "is_written_off_desc"), "Index", new { sortOrder = ViewBag.is_written_offSortParm, SearchStrings = GetAgregateSearchString() })
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.item_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.count)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.expiration_date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.is_written_off)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.item_id }) |
+                @Html.ActionLink("Details", "Details", new { id = item.item_id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.item_id })
+            </td>
+        </tr>
+    }
+
+</table>

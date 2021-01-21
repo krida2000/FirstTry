@@ -1,0 +1,117 @@
+﻿@model IEnumerable<FirstTry.storage_using_by_doctors>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@{ string ShowButton(string up, string down)
+    {
+        if (ViewData["sortOrder"] != null)
+        {
+
+            if (ViewData["sortOrder"].ToString() == up)
+            {
+                return HttpUtility.HtmlEncode("↑");
+            }
+            else if (ViewData["sortOrder"].ToString() == down)
+            {
+                return HttpUtility.HtmlEncode("↓");
+            }
+        }
+        return "";
+    }
+}
+
+@{ string GetSearchString(int index)
+    {
+        if (ViewBag.SearchStrings != null)
+        {
+            return ViewBag.SearchStrings[index];
+        }
+        return string.Empty;
+    }
+}
+
+@{ string GetAgregateSearchString()
+    {
+        if (ViewBag.SearchStrings != null)
+        {
+            return (ViewBag.SearchStrings as string[]).Aggregate((sum, next) => sum + '%' + next);
+        }
+        return string.Empty;
+    }
+}
+
+<h2>Index</h2>
+
+@using (Html.BeginForm("", "DoctorVisits", FormMethod.Get, new { id = "searchform" }))
+{
+
+}
+
+<input type="text" name="sortOrder" form="searchform" value="@ViewData["sortOrder"]" class="hidden" />
+
+<table class="table">
+    <tr>
+        <td>
+            <input type="text" name="SearchStrings" form="searchform" style="width: 100%" value="@GetSearchString(0)" />
+        </td>
+        <td>
+            <input type="text" name="SearchStrings" form="searchform" style="width: 100%" value="@GetSearchString(1)" />
+        </td>
+        <td>
+            <input type="text" name="SearchStrings" form="searchform" style="width: 100%" value="@GetSearchString(2)" />
+        </td>
+        <td>
+            <input type="text" name="SearchStrings" form="searchform" style="width: 100%" value="@GetSearchString(3)" />
+        </td>
+        <td>
+            <input type="submit" value="Search" form="searchform" />
+        </td>
+    </tr>
+    <tr>
+        <th>
+            @Html.ActionLink(@Html.DisplayNameFor(model => model.FIO).ToString() + @ShowButton("FIO", "FIO_desc"), "Index", new { sortOrder = ViewBag.FIOSortParm, SearchStrings = GetAgregateSearchString(), doctorId = ViewData["doctorId"] })
+        </th>
+        <th>
+            @Html.ActionLink(@Html.DisplayNameFor(model => model.Item_name).ToString() + @ShowButton("Item_name", "Item_name_desc"), "Index", new { sortOrder = ViewBag.Item_nameSortParm, SearchStrings = GetAgregateSearchString(), doctorId = ViewData["doctorId"] })
+        </th>
+        <th>
+            @Html.ActionLink(@Html.DisplayNameFor(model => model.Count).ToString() + @ShowButton("Count", "Count_desc"), "Index", new { sortOrder = ViewBag.CountSortParm, SearchStrings = GetAgregateSearchString(), doctorId = ViewData["doctorId"] })
+        </th>
+        <th>
+            @Html.ActionLink(@Html.DisplayNameFor(model => model.Percent).ToString() + @ShowButton("Percent", "Percent_desc"), "Index", new { sortOrder = ViewBag.PercentSortParm, SearchStrings = GetAgregateSearchString(), doctorId = ViewData["doctorId"] })
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FIO)
+            </td>
+            <td class="DName">
+                @Html.DisplayFor(modelItem => item.Item_name)
+            </td>
+            <td class="DCount">
+                @Html.DisplayFor(modelItem => item.Count)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Percent)
+            </td>
+        </tr>
+    }
+
+</table>
+<div id="chart_div"></div>
+
+@if (ViewData["doctorId"] != null)
+{
+    @Scripts.Render("https://www.google.com/jsapi")
+    @Scripts.Render("~/Scripts/chartCreator.js")
+
+    <script>
+    createChart();
+    </script>
+
+}

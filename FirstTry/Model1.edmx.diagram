@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="882c77dc31a04985af3bea9f7631758d" Name="Diagram1">
+        <EntityTypeShape EntityType="polyclinicModel.doctor_visits" Width="1.5" PointX="3" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="polyclinicModel.doctors" Width="1.5" PointX="0.75" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="polyclinicModel.patients" Width="1.5" PointX="0.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="polyclinicModel.placing_in_hospital" Width="1.5" PointX="6" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="polyclinicModel.storage" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="polyclinicModel.storage_using" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="polyclinicModel.items_using_by_doctors" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="polyclinicModel.storage_using_by_doctors" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="polyclinicModel.doctor_visits_doctor_id_fkey" ManuallyRouted="false" />
+        <AssociationConnector Association="polyclinicModel.doctor_visits_patient_id_fkey" ManuallyRouted="false" />
+        <AssociationConnector Association="polyclinicModel.placing_in_hospital_attending_doctor_id_fkey" ManuallyRouted="false" />
+        <AssociationConnector Association="polyclinicModel.storage_using_doctor_id_fkey" ManuallyRouted="false" />
+        <AssociationConnector Association="polyclinicModel.placing_in_hospital_patient_id_fkey" ManuallyRouted="false" />
+        <AssociationConnector Association="polyclinicModel.storage_using_item_id_fkey" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

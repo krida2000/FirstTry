@@ -1,0 +1,50 @@
+﻿@model FirstTry.storage_using
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Перегляд</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.count)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.count)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.doctors.FIO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.doctors.FIO)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.storage.item_name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.storage.item_name)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

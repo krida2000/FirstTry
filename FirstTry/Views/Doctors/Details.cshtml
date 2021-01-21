@@ -1,0 +1,90 @@
+﻿@model FirstTry.doctors
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Перегляд</h4>
+    <hr />
+    @Html.ActionLink("Використання складу", "../StorageUsingByDoctors/Index", new { doctorId = ViewData.Model.id })
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FIO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FIO)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.phone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.phone)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.salary)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.salary)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.date_start_work)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.date_start_work)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.date_end_work)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.date_end_work)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.position)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.position)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.qualification)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.qualification)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.address)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.address)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

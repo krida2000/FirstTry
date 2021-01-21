@@ -1,0 +1,889 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Хранилище polyclinicModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="doctor_visits">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="doctor_id" Type="int" Nullable="false" />
+          <Property Name="patient_id" Type="int" Nullable="false" />
+          <Property Name="date" Type="date" Nullable="false" />
+          <Property Name="reason" Type="nvarchar" MaxLength="150" />
+          <Property Name="result" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="treatment" Type="nvarchar" MaxLength="300" />
+        </EntityType>
+        <EntityType Name="doctors">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FIO" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="phone" Type="nvarchar" MaxLength="13" />
+          <Property Name="salary" Type="int" Nullable="false" />
+          <Property Name="date_start_work" Type="date" Nullable="false" />
+          <Property Name="date_end_work" Type="date" />
+          <Property Name="position" Type="nvarchar" MaxLength="70" />
+          <Property Name="qualification" Type="int" Nullable="false" />
+          <Property Name="address" Type="nvarchar" MaxLength="150" />
+        </EntityType>
+        <EntityType Name="patients">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FIO" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="phone" Type="nvarchar" MaxLength="13" />
+          <Property Name="date_birth" Type="date" />
+          <Property Name="address" Type="nvarchar" MaxLength="150" />
+        </EntityType>
+        <EntityType Name="placing_in_hospital">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="attending_doctor_id" Type="int" Nullable="false" />
+          <Property Name="patient_id" Type="int" Nullable="false" />
+          <Property Name="date_start" Type="date" Nullable="false" />
+          <Property Name="date_end" Type="date" />
+          <Property Name="reason" Type="nvarchar" MaxLength="150" />
+          <Property Name="treatment" Type="nvarchar" MaxLength="300" Nullable="false" />
+        </EntityType>
+        <EntityType Name="storage">
+          <Key>
+            <PropertyRef Name="item_id" />
+          </Key>
+          <Property Name="item_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="item_name" Type="nvarchar" MaxLength="60" Nullable="false" />
+          <Property Name="count" Type="int" Nullable="false" />
+          <Property Name="price" Type="int" Nullable="false" />
+          <Property Name="expiration_date" Type="date" />
+          <Property Name="is_written_off" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="storage_using">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="doctor_id" Type="int" Nullable="false" />
+          <Property Name="item_id" Type="int" Nullable="false" />
+          <Property Name="count" Type="int" Nullable="false" />
+          <Property Name="date" Type="date" Nullable="false" />
+        </EntityType>
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "polyclinic.dbo.items_using_by_doctors" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+        <EntityType Name="items_using_by_doctors">
+          <Key>
+            <PropertyRef Name="stamp" />
+          </Key>
+          <Property Name="stamp" Type="varchar" MaxLength="31" Nullable="false" />
+          <Property Name="item_id" Type="int" Nullable="false" />
+          <Property Name="FIO" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Count" Type="int" />
+          <Property Name="Percent" Type="nvarchar" MaxLength="7" />
+        </EntityType>
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "polyclinic.dbo.storage_using_by_doctors" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+        <EntityType Name="storage_using_by_doctors">
+          <Key>
+            <PropertyRef Name="stamp" />
+          </Key>
+          <Property Name="stamp" Type="varchar" MaxLength="31" Nullable="false" />
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="FIO" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Item name" Type="nvarchar" MaxLength="60" />
+          <Property Name="Count" Type="int" />
+          <Property Name="Percent" Type="nvarchar" MaxLength="7" />
+        </EntityType>
+        <Association Name="doctor_visits_doctor_id_fkey">
+          <End Role="doctors" Type="Self.doctors" Multiplicity="1" />
+          <End Role="doctor_visits" Type="Self.doctor_visits" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="doctors">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="doctor_visits">
+              <PropertyRef Name="doctor_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="doctor_visits_patient_id_fkey">
+          <End Role="patients" Type="Self.patients" Multiplicity="1" />
+          <End Role="doctor_visits" Type="Self.doctor_visits" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="patients">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="doctor_visits">
+              <PropertyRef Name="patient_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="placing_in_hospital_attending_doctor_id_fkey">
+          <End Role="doctors" Type="Self.doctors" Multiplicity="1" />
+          <End Role="placing_in_hospital" Type="Self.placing_in_hospital" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="doctors">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="placing_in_hospital">
+              <PropertyRef Name="attending_doctor_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="placing_in_hospital_patient_id_fkey">
+          <End Role="patients" Type="Self.patients" Multiplicity="1" />
+          <End Role="placing_in_hospital" Type="Self.placing_in_hospital" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="patients">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="placing_in_hospital">
+              <PropertyRef Name="patient_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="storage_using_doctor_id_fkey">
+          <End Role="doctors" Type="Self.doctors" Multiplicity="1" />
+          <End Role="storage_using" Type="Self.storage_using" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="doctors">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="storage_using">
+              <PropertyRef Name="doctor_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="storage_using_item_id_fkey">
+          <End Role="storage" Type="Self.storage" Multiplicity="1" />
+          <End Role="storage_using" Type="Self.storage_using" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="storage">
+              <PropertyRef Name="item_id" />
+            </Principal>
+            <Dependent Role="storage_using">
+              <PropertyRef Name="item_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="del_doctor_visits" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="rez" Type="int" Mode="InOut" />
+        </Function>
+        <Function Name="del_doctors" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="rez" Type="int" Mode="InOut" />
+        </Function>
+        <Function Name="del_patients" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="rez" Type="varchar" Mode="InOut" />
+        </Function>
+        <Function Name="del_placing_in_hospital" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="rez" Type="int" Mode="InOut" />
+        </Function>
+        <Function Name="del_storage" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="item_id" Type="int" Mode="In" />
+          <Parameter Name="rez" Type="int" Mode="InOut" />
+        </Function>
+        <Function Name="del_storage_using" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="rez" Type="int" Mode="InOut" />
+        </Function>
+        <Function Name="get_item_by_id" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="nvarchar">
+          <Parameter Name="id_item" Type="int" Mode="In" />
+        </Function>
+        <Function Name="ins_doctor_visits" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="doctor_id" Type="int" Mode="In" />
+          <Parameter Name="patient_id" Type="int" Mode="In" />
+          <Parameter Name="date" Type="date" Mode="In" />
+          <Parameter Name="reason" Type="nvarchar" Mode="In" />
+          <Parameter Name="result" Type="nvarchar" Mode="In" />
+          <Parameter Name="treatment" Type="nvarchar" Mode="In" />
+          <Parameter Name="rez" Type="int" Mode="InOut" />
+        </Function>
+        <Function Name="ins_doctors" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="FIO" Type="nvarchar" Mode="In" />
+          <Parameter Name="phone" Type="nvarchar" Mode="In" />
+          <Parameter Name="salary" Type="int" Mode="In" />
+          <Parameter Name="date_start_work" Type="date" Mode="In" />
+          <Parameter Name="date_end_work" Type="date" Mode="In" />
+          <Parameter Name="position" Type="nvarchar" Mode="In" />
+          <Parameter Name="qualification" Type="int" Mode="In" />
+          <Parameter Name="address" Type="nvarchar" Mode="In" />
+          <Parameter Name="rez" Type="nvarchar" Mode="InOut" />
+        </Function>
+        <Function Name="ins_patients" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="FIO" Type="nvarchar" Mode="In" />
+          <Parameter Name="phone" Type="nvarchar" Mode="In" />
+          <Parameter Name="date_birth" Type="date" Mode="In" />
+          <Parameter Name="address" Type="nvarchar" Mode="In" />
+          <Parameter Name="rez" Type="nvarchar" Mode="InOut" />
+        </Function>
+        <Function Name="ins_placing_in_hospital" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="attending_doctor_id" Type="int" Mode="In" />
+          <Parameter Name="patient_id" Type="int" Mode="In" />
+          <Parameter Name="date_start" Type="date" Mode="In" />
+          <Parameter Name="date_end" Type="date" Mode="In" />
+          <Parameter Name="reason" Type="nvarchar" Mode="In" />
+          <Parameter Name="treatment" Type="nvarchar" Mode="In" />
+          <Parameter Name="rez" Type="int" Mode="InOut" />
+        </Function>
+        <Function Name="ins_storage" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="item_name" Type="nvarchar" Mode="In" />
+          <Parameter Name="count" Type="int" Mode="In" />
+          <Parameter Name="price" Type="int" Mode="In" />
+          <Parameter Name="expiration_date" Type="date" Mode="In" />
+          <Parameter Name="is_written_off" Type="bit" Mode="In" />
+          <Parameter Name="rez" Type="nvarchar" Mode="InOut" />
+        </Function>
+        <Function Name="ins_storage_using" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="doctor_id" Type="int" Mode="In" />
+          <Parameter Name="item_id" Type="int" Mode="In" />
+          <Parameter Name="count" Type="int" Mode="In" />
+          <Parameter Name="date" Type="date" Mode="In" />
+          <Parameter Name="rez" Type="int" Mode="InOut" />
+        </Function>
+        <Function Name="items_using_by_doctors_func" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="nvarchar">
+          <Parameter Name="id_doc" Type="int" Mode="In" />
+          <Parameter Name="id_item" Type="int" Mode="In" />
+        </Function>
+        <Function Name="me_proc" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id_doc" Type="int" Mode="In" />
+          <Parameter Name="id_item" Type="int" Mode="In" />
+        </Function>
+        <Function Name="my_func" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="nvarchar">
+          <Parameter Name="id_doc" Type="int" Mode="In" />
+          <Parameter Name="id_item" Type="int" Mode="In" />
+        </Function>
+        <Function Name="test_proc" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="upd_doctor_visits" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="doctor_id" Type="int" Mode="In" />
+          <Parameter Name="patient_id" Type="int" Mode="In" />
+          <Parameter Name="date" Type="date" Mode="In" />
+          <Parameter Name="reason" Type="nvarchar" Mode="In" />
+          <Parameter Name="result" Type="nvarchar" Mode="In" />
+          <Parameter Name="treatment" Type="nvarchar" Mode="In" />
+          <Parameter Name="rez" Type="int" Mode="InOut" />
+        </Function>
+        <Function Name="upd_doctors" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="FIO" Type="nvarchar" Mode="In" />
+          <Parameter Name="phone" Type="nvarchar" Mode="In" />
+          <Parameter Name="salary" Type="int" Mode="In" />
+          <Parameter Name="date_start_work" Type="date" Mode="In" />
+          <Parameter Name="date_end_work" Type="date" Mode="In" />
+          <Parameter Name="position" Type="nvarchar" Mode="In" />
+          <Parameter Name="qualification" Type="int" Mode="In" />
+          <Parameter Name="address" Type="nvarchar" Mode="In" />
+          <Parameter Name="rez" Type="int" Mode="InOut" />
+        </Function>
+        <Function Name="upd_patients" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="FIO" Type="nvarchar" Mode="In" />
+          <Parameter Name="phone" Type="nvarchar" Mode="In" />
+          <Parameter Name="date_birth" Type="date" Mode="In" />
+          <Parameter Name="address" Type="nvarchar" Mode="In" />
+          <Parameter Name="rez" Type="int" Mode="InOut" />
+        </Function>
+        <Function Name="upd_placing_in_hospital" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="attending_doctor_id" Type="int" Mode="In" />
+          <Parameter Name="patient_id" Type="int" Mode="In" />
+          <Parameter Name="date_start" Type="date" Mode="In" />
+          <Parameter Name="date_end" Type="date" Mode="In" />
+          <Parameter Name="reason" Type="nvarchar" Mode="In" />
+          <Parameter Name="treatment" Type="nvarchar" Mode="In" />
+          <Parameter Name="rez" Type="int" Mode="InOut" />
+        </Function>
+        <Function Name="upd_storage" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="item_id" Type="int" Mode="In" />
+          <Parameter Name="item_name" Type="nvarchar" Mode="In" />
+          <Parameter Name="count" Type="int" Mode="In" />
+          <Parameter Name="price" Type="int" Mode="In" />
+          <Parameter Name="expiration_date" Type="date" Mode="In" />
+          <Parameter Name="is_written_off" Type="bit" Mode="In" />
+          <Parameter Name="rez" Type="int" Mode="InOut" />
+        </Function>
+        <Function Name="upd_storage_using" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="doctor_id" Type="int" Mode="In" />
+          <Parameter Name="item_id" Type="int" Mode="In" />
+          <Parameter Name="count" Type="int" Mode="In" />
+          <Parameter Name="date" Type="date" Mode="In" />
+          <Parameter Name="rez" Type="int" Mode="InOut" />
+        </Function>
+        <EntityContainer Name="Хранилище polyclinicModelContainer">
+          <EntitySet Name="doctor_visits" EntityType="Self.doctor_visits" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="doctors" EntityType="Self.doctors" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="patients" EntityType="Self.patients" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="placing_in_hospital" EntityType="Self.placing_in_hospital" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="storage" EntityType="Self.storage" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="storage_using" EntityType="Self.storage_using" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="items_using_by_doctors" EntityType="Self.items_using_by_doctors" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [items_using_by_doctors].[stamp] AS [stamp], 
+    [items_using_by_doctors].[item_id] AS [item_id], 
+    [items_using_by_doctors].[FIO] AS [FIO], 
+    [items_using_by_doctors].[Count] AS [Count], 
+    [items_using_by_doctors].[Percent] AS [Percent]
+    FROM [dbo].[items_using_by_doctors] AS [items_using_by_doctors]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="storage_using_by_doctors" EntityType="Self.storage_using_by_doctors" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [storage_using_by_doctors].[stamp] AS [stamp], 
+    [storage_using_by_doctors].[id] AS [id], 
+    [storage_using_by_doctors].[FIO] AS [FIO], 
+    [storage_using_by_doctors].[Item name] AS [Item name], 
+    [storage_using_by_doctors].[Count] AS [Count], 
+    [storage_using_by_doctors].[Percent] AS [Percent]
+    FROM [dbo].[storage_using_by_doctors] AS [storage_using_by_doctors]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="doctor_visits_doctor_id_fkey" Association="Self.doctor_visits_doctor_id_fkey">
+            <End Role="doctors" EntitySet="doctors" />
+            <End Role="doctor_visits" EntitySet="doctor_visits" />
+          </AssociationSet>
+          <AssociationSet Name="doctor_visits_patient_id_fkey" Association="Self.doctor_visits_patient_id_fkey">
+            <End Role="patients" EntitySet="patients" />
+            <End Role="doctor_visits" EntitySet="doctor_visits" />
+          </AssociationSet>
+          <AssociationSet Name="placing_in_hospital_attending_doctor_id_fkey" Association="Self.placing_in_hospital_attending_doctor_id_fkey">
+            <End Role="doctors" EntitySet="doctors" />
+            <End Role="placing_in_hospital" EntitySet="placing_in_hospital" />
+          </AssociationSet>
+          <AssociationSet Name="placing_in_hospital_patient_id_fkey" Association="Self.placing_in_hospital_patient_id_fkey">
+            <End Role="patients" EntitySet="patients" />
+            <End Role="placing_in_hospital" EntitySet="placing_in_hospital" />
+          </AssociationSet>
+          <AssociationSet Name="storage_using_doctor_id_fkey" Association="Self.storage_using_doctor_id_fkey">
+            <End Role="doctors" EntitySet="doctors" />
+            <End Role="storage_using" EntitySet="storage_using" />
+          </AssociationSet>
+          <AssociationSet Name="storage_using_item_id_fkey" Association="Self.storage_using_item_id_fkey">
+            <End Role="storage" EntitySet="storage" />
+            <End Role="storage_using" EntitySet="storage_using" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="polyclinicModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="doctor_visits">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="doctor_id" Type="Int32" Nullable="false" />
+          <Property Name="patient_id" Type="Int32" Nullable="false" />
+          <Property Name="date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="reason" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="result" Type="String" MaxLength="300" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="treatment" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="doctors" Relationship="Self.doctor_visits_doctor_id_fkey" FromRole="doctor_visits" ToRole="doctors" />
+          <NavigationProperty Name="patients" Relationship="Self.doctor_visits_patient_id_fkey" FromRole="doctor_visits" ToRole="patients" />
+        </EntityType>
+        <EntityType Name="doctors">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FIO" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="phone" Type="String" MaxLength="13" FixedLength="false" Unicode="true" />
+          <Property Name="salary" Type="Int32" Nullable="false" />
+          <Property Name="date_start_work" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="date_end_work" Type="DateTime" Precision="0" />
+          <Property Name="position" Type="String" MaxLength="70" FixedLength="false" Unicode="true" />
+          <Property Name="qualification" Type="Int32" Nullable="false" />
+          <Property Name="address" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="doctor_visits" Relationship="Self.doctor_visits_doctor_id_fkey" FromRole="doctors" ToRole="doctor_visits" />
+          <NavigationProperty Name="placing_in_hospital" Relationship="Self.placing_in_hospital_attending_doctor_id_fkey" FromRole="doctors" ToRole="placing_in_hospital" />
+          <NavigationProperty Name="storage_using" Relationship="Self.storage_using_doctor_id_fkey" FromRole="doctors" ToRole="storage_using" />
+        </EntityType>
+        <EntityType Name="patients">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FIO" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="phone" Type="String" MaxLength="13" FixedLength="false" Unicode="true" />
+          <Property Name="date_birth" Type="DateTime" Precision="0" />
+          <Property Name="address" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="doctor_visits" Relationship="Self.doctor_visits_patient_id_fkey" FromRole="patients" ToRole="doctor_visits" />
+          <NavigationProperty Name="placing_in_hospital" Relationship="Self.placing_in_hospital_patient_id_fkey" FromRole="patients" ToRole="placing_in_hospital" />
+        </EntityType>
+        <EntityType Name="placing_in_hospital">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="attending_doctor_id" Type="Int32" Nullable="false" />
+          <Property Name="patient_id" Type="Int32" Nullable="false" />
+          <Property Name="date_start" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="date_end" Type="DateTime" Precision="0" />
+          <Property Name="reason" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="treatment" Type="String" MaxLength="300" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="doctors" Relationship="Self.placing_in_hospital_attending_doctor_id_fkey" FromRole="placing_in_hospital" ToRole="doctors" />
+          <NavigationProperty Name="patients" Relationship="Self.placing_in_hospital_patient_id_fkey" FromRole="placing_in_hospital" ToRole="patients" />
+        </EntityType>
+        <EntityType Name="storage">
+          <Key>
+            <PropertyRef Name="item_id" />
+          </Key>
+          <Property Name="item_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="item_name" Type="String" MaxLength="60" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="count" Type="Int32" Nullable="false" />
+          <Property Name="price" Type="Int32" Nullable="false" />
+          <Property Name="expiration_date" Type="DateTime" Precision="0" />
+          <Property Name="is_written_off" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="storage_using" Relationship="Self.storage_using_item_id_fkey" FromRole="storage" ToRole="storage_using" />
+        </EntityType>
+        <EntityType Name="storage_using">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="doctor_id" Type="Int32" Nullable="false" />
+          <Property Name="item_id" Type="Int32" Nullable="false" />
+          <Property Name="count" Type="Int32" Nullable="false" />
+          <Property Name="date" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="doctors" Relationship="Self.storage_using_doctor_id_fkey" FromRole="storage_using" ToRole="doctors" />
+          <NavigationProperty Name="storage" Relationship="Self.storage_using_item_id_fkey" FromRole="storage_using" ToRole="storage" />
+        </EntityType>
+        <EntityType Name="items_using_by_doctors">
+          <Key>
+            <PropertyRef Name="stamp" />
+          </Key>
+          <Property Name="stamp" Type="String" MaxLength="31" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="item_id" Type="Int32" Nullable="false" />
+          <Property Name="FIO" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Count" Type="Int32" />
+          <Property Name="Percent" Type="String" MaxLength="7" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="storage_using_by_doctors">
+          <Key>
+            <PropertyRef Name="stamp" />
+          </Key>
+          <Property Name="stamp" Type="String" MaxLength="31" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="FIO" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Item_name" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="Count" Type="Int32" />
+          <Property Name="Percent" Type="String" MaxLength="7" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="doctor_visits_doctor_id_fkey">
+          <End Role="doctors" Type="Self.doctors" Multiplicity="1" />
+          <End Role="doctor_visits" Type="Self.doctor_visits" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="doctors">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="doctor_visits">
+              <PropertyRef Name="doctor_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="doctor_visits_patient_id_fkey">
+          <End Role="patients" Type="Self.patients" Multiplicity="1" />
+          <End Role="doctor_visits" Type="Self.doctor_visits" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="patients">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="doctor_visits">
+              <PropertyRef Name="patient_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="placing_in_hospital_attending_doctor_id_fkey">
+          <End Role="doctors" Type="Self.doctors" Multiplicity="1" />
+          <End Role="placing_in_hospital" Type="Self.placing_in_hospital" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="doctors">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="placing_in_hospital">
+              <PropertyRef Name="attending_doctor_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="storage_using_doctor_id_fkey">
+          <End Role="doctors" Type="Self.doctors" Multiplicity="1" />
+          <End Role="storage_using" Type="Self.storage_using" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="doctors">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="storage_using">
+              <PropertyRef Name="doctor_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="placing_in_hospital_patient_id_fkey">
+          <End Role="patients" Type="Self.patients" Multiplicity="1" />
+          <End Role="placing_in_hospital" Type="Self.placing_in_hospital" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="patients">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="placing_in_hospital">
+              <PropertyRef Name="patient_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="storage_using_item_id_fkey">
+          <End Role="storage" Type="Self.storage" Multiplicity="1" />
+          <End Role="storage_using" Type="Self.storage_using" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="storage">
+              <PropertyRef Name="item_id" />
+            </Principal>
+            <Dependent Role="storage_using">
+              <PropertyRef Name="item_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="polyclinicEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="doctor_visits" EntityType="Self.doctor_visits" />
+          <EntitySet Name="doctors" EntityType="Self.doctors" />
+          <EntitySet Name="patients" EntityType="Self.patients" />
+          <EntitySet Name="placing_in_hospital" EntityType="Self.placing_in_hospital" />
+          <EntitySet Name="storage" EntityType="Self.storage" />
+          <EntitySet Name="storage_using" EntityType="Self.storage_using" />
+          <EntitySet Name="items_using_by_doctors" EntityType="Self.items_using_by_doctors" />
+          <EntitySet Name="storage_using_by_doctors" EntityType="Self.storage_using_by_doctors" />
+          <AssociationSet Name="doctor_visits_doctor_id_fkey" Association="Self.doctor_visits_doctor_id_fkey">
+            <End Role="doctors" EntitySet="doctors" />
+            <End Role="doctor_visits" EntitySet="doctor_visits" />
+          </AssociationSet>
+          <AssociationSet Name="doctor_visits_patient_id_fkey" Association="Self.doctor_visits_patient_id_fkey">
+            <End Role="patients" EntitySet="patients" />
+            <End Role="doctor_visits" EntitySet="doctor_visits" />
+          </AssociationSet>
+          <AssociationSet Name="placing_in_hospital_attending_doctor_id_fkey" Association="Self.placing_in_hospital_attending_doctor_id_fkey">
+            <End Role="doctors" EntitySet="doctors" />
+            <End Role="placing_in_hospital" EntitySet="placing_in_hospital" />
+          </AssociationSet>
+          <AssociationSet Name="storage_using_doctor_id_fkey" Association="Self.storage_using_doctor_id_fkey">
+            <End Role="doctors" EntitySet="doctors" />
+            <End Role="storage_using" EntitySet="storage_using" />
+          </AssociationSet>
+          <AssociationSet Name="placing_in_hospital_patient_id_fkey" Association="Self.placing_in_hospital_patient_id_fkey">
+            <End Role="patients" EntitySet="patients" />
+            <End Role="placing_in_hospital" EntitySet="placing_in_hospital" />
+          </AssociationSet>
+          <AssociationSet Name="storage_using_item_id_fkey" Association="Self.storage_using_item_id_fkey">
+            <End Role="storage" EntitySet="storage" />
+            <End Role="storage_using" EntitySet="storage_using" />
+          </AssociationSet>
+          <FunctionImport Name="del_doctor_visits">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="rez" Mode="InOut" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="del_doctors">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="rez" Mode="InOut" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="del_patients">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="rez" Mode="InOut" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="del_placing_in_hospital">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="rez" Mode="InOut" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="del_storage">
+            <Parameter Name="item_id" Mode="In" Type="Int32" />
+            <Parameter Name="rez" Mode="InOut" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="del_storage_using">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="rez" Mode="InOut" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="ins_doctor_visits">
+            <Parameter Name="doctor_id" Mode="In" Type="Int32" />
+            <Parameter Name="patient_id" Mode="In" Type="Int32" />
+            <Parameter Name="date" Mode="In" Type="DateTime" />
+            <Parameter Name="reason" Mode="In" Type="String" />
+            <Parameter Name="result" Mode="In" Type="String" />
+            <Parameter Name="treatment" Mode="In" Type="String" />
+            <Parameter Name="rez" Mode="InOut" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="ins_doctors">
+            <Parameter Name="FIO" Mode="In" Type="String" />
+            <Parameter Name="phone" Mode="In" Type="String" />
+            <Parameter Name="salary" Mode="In" Type="Int32" />
+            <Parameter Name="date_start_work" Mode="In" Type="DateTime" />
+            <Parameter Name="date_end_work" Mode="In" Type="DateTime" />
+            <Parameter Name="position" Mode="In" Type="String" />
+            <Parameter Name="qualification" Mode="In" Type="Int32" />
+            <Parameter Name="address" Mode="In" Type="String" />
+            <Parameter Name="rez" Mode="InOut" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="ins_patients">
+            <Parameter Name="FIO" Mode="In" Type="String" />
+            <Parameter Name="phone" Mode="In" Type="String" />
+            <Parameter Name="date_birth" Mode="In" Type="DateTime" />
+            <Parameter Name="address" Mode="In" Type="String" />
+            <Parameter Name="rez" Mode="InOut" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="ins_placing_in_hospital">
+            <Parameter Name="attending_doctor_id" Mode="In" Type="Int32" />
+            <Parameter Name="patient_id" Mode="In" Type="Int32" />
+            <Parameter Name="date_start" Mode="In" Type="DateTime" />
+            <Parameter Name="date_end" Mode="In" Type="DateTime" />
+            <Parameter Name="reason" Mode="In" Type="String" />
+            <Parameter Name="treatment" Mode="In" Type="String" />
+            <Parameter Name="rez" Mode="InOut" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="ins_storage">
+            <Parameter Name="item_name" Mode="In" Type="String" />
+            <Parameter Name="count" Mode="In" Type="Int32" />
+            <Parameter Name="price" Mode="In" Type="Int32" />
+            <Parameter Name="expiration_date" Mode="In" Type="DateTime" />
+            <Parameter Name="is_written_off" Mode="In" Type="Boolean" />
+            <Parameter Name="rez" Mode="InOut" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="ins_storage_using">
+            <Parameter Name="doctor_id" Mode="In" Type="Int32" />
+            <Parameter Name="item_id" Mode="In" Type="Int32" />
+            <Parameter Name="count" Mode="In" Type="Int32" />
+            <Parameter Name="date" Mode="In" Type="DateTime" />
+            <Parameter Name="rez" Mode="InOut" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="me_proc" ReturnType="Collection(String)">
+            <Parameter Name="id_doc" Mode="In" Type="Int32" />
+            <Parameter Name="id_item" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="test_proc" ReturnType="Collection(polyclinicModel.test_proc_Result)">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="upd_doctor_visits">
+            <Parameter Name="doctor_id" Mode="In" Type="Int32" />
+            <Parameter Name="patient_id" Mode="In" Type="Int32" />
+            <Parameter Name="date" Mode="In" Type="DateTime" />
+            <Parameter Name="reason" Mode="In" Type="String" />
+            <Parameter Name="result" Mode="In" Type="String" />
+            <Parameter Name="treatment" Mode="In" Type="String" />
+            <Parameter Name="rez" Mode="InOut" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="upd_doctors">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="FIO" Mode="In" Type="String" />
+            <Parameter Name="phone" Mode="In" Type="String" />
+            <Parameter Name="salary" Mode="In" Type="Int32" />
+            <Parameter Name="date_start_work" Mode="In" Type="DateTime" />
+            <Parameter Name="date_end_work" Mode="In" Type="DateTime" />
+            <Parameter Name="position" Mode="In" Type="String" />
+            <Parameter Name="qualification" Mode="In" Type="Int32" />
+            <Parameter Name="address" Mode="In" Type="String" />
+            <Parameter Name="rez" Mode="InOut" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="upd_patients">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="FIO" Mode="In" Type="String" />
+            <Parameter Name="phone" Mode="In" Type="String" />
+            <Parameter Name="date_birth" Mode="In" Type="DateTime" />
+            <Parameter Name="address" Mode="In" Type="String" />
+            <Parameter Name="rez" Mode="InOut" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="upd_placing_in_hospital">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="attending_doctor_id" Mode="In" Type="Int32" />
+            <Parameter Name="patient_id" Mode="In" Type="Int32" />
+            <Parameter Name="date_start" Mode="In" Type="DateTime" />
+            <Parameter Name="date_end" Mode="In" Type="DateTime" />
+            <Parameter Name="reason" Mode="In" Type="String" />
+            <Parameter Name="treatment" Mode="In" Type="String" />
+            <Parameter Name="rez" Mode="InOut" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="upd_storage">
+            <Parameter Name="item_id" Mode="In" Type="Int32" />
+            <Parameter Name="item_name" Mode="In" Type="String" />
+            <Parameter Name="count" Mode="In" Type="Int32" />
+            <Parameter Name="price" Mode="In" Type="Int32" />
+            <Parameter Name="expiration_date" Mode="In" Type="DateTime" />
+            <Parameter Name="is_written_off" Mode="In" Type="Boolean" />
+            <Parameter Name="rez" Mode="InOut" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="upd_storage_using">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="doctor_id" Mode="In" Type="Int32" />
+            <Parameter Name="item_id" Mode="In" Type="Int32" />
+            <Parameter Name="count" Mode="In" Type="Int32" />
+            <Parameter Name="date" Mode="In" Type="DateTime" />
+            <Parameter Name="rez" Mode="InOut" Type="Int32" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="test_proc_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="FIO" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="phone" Nullable="true" MaxLength="13" />
+          <Property Type="DateTime" Name="date_birth" Nullable="true" />
+          <Property Type="String" Name="address" Nullable="true" MaxLength="150" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище polyclinicModelContainer" CdmEntityContainer="polyclinicEntities">
+          <EntitySetMapping Name="doctor_visits">
+            <EntityTypeMapping TypeName="polyclinicModel.doctor_visits">
+              <MappingFragment StoreEntitySet="doctor_visits">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="doctor_id" ColumnName="doctor_id" />
+                <ScalarProperty Name="patient_id" ColumnName="patient_id" />
+                <ScalarProperty Name="date" ColumnName="date" />
+                <ScalarProperty Name="reason" ColumnName="reason" />
+                <ScalarProperty Name="result" ColumnName="result" />
+                <ScalarProperty Name="treatment" ColumnName="treatment" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="doctors">
+            <EntityTypeMapping TypeName="polyclinicModel.doctors">
+              <MappingFragment StoreEntitySet="doctors">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="FIO" ColumnName="FIO" />
+                <ScalarProperty Name="phone" ColumnName="phone" />
+                <ScalarProperty Name="salary" ColumnName="salary" />
+                <ScalarProperty Name="date_start_work" ColumnName="date_start_work" />
+                <ScalarProperty Name="date_end_work" ColumnName="date_end_work" />
+                <ScalarProperty Name="position" ColumnName="position" />
+                <ScalarProperty Name="qualification" ColumnName="qualification" />
+                <ScalarProperty Name="address" ColumnName="address" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="patients">
+            <EntityTypeMapping TypeName="polyclinicModel.patients">
+              <MappingFragment StoreEntitySet="patients">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="FIO" ColumnName="FIO" />
+                <ScalarProperty Name="phone" ColumnName="phone" />
+                <ScalarProperty Name="date_birth" ColumnName="date_birth" />
+                <ScalarProperty Name="address" ColumnName="address" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="placing_in_hospital">
+            <EntityTypeMapping TypeName="polyclinicModel.placing_in_hospital">
+              <MappingFragment StoreEntitySet="placing_in_hospital">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="attending_doctor_id" ColumnName="attending_doctor_id" />
+                <ScalarProperty Name="patient_id" ColumnName="patient_id" />
+                <ScalarProperty Name="date_start" ColumnName="date_start" />
+                <ScalarProperty Name="date_end" ColumnName="date_end" />
+                <ScalarProperty Name="reason" ColumnName="reason" />
+                <ScalarProperty Name="treatment" ColumnName="treatment" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="storage">
+            <EntityTypeMapping TypeName="polyclinicModel.storage">
+              <MappingFragment StoreEntitySet="storage">
+                <ScalarProperty Name="item_id" ColumnName="item_id" />
+                <ScalarProperty Name="item_name" ColumnName="item_name" />
+                <ScalarProperty Name="count" ColumnName="count" />
+                <ScalarProperty Name="price" ColumnName="price" />
+                <ScalarProperty Name="expiration_date" ColumnName="expiration_date" />
+                <ScalarProperty Name="is_written_off" ColumnName="is_written_off" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="storage_using">
+            <EntityTypeMapping TypeName="polyclinicModel.storage_using">
+              <MappingFragment StoreEntitySet="storage_using">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="doctor_id" ColumnName="doctor_id" />
+                <ScalarProperty Name="item_id" ColumnName="item_id" />
+                <ScalarProperty Name="count" ColumnName="count" />
+                <ScalarProperty Name="date" ColumnName="date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="items_using_by_doctors">
+            <EntityTypeMapping TypeName="polyclinicModel.items_using_by_doctors">
+              <MappingFragment StoreEntitySet="items_using_by_doctors">
+                <ScalarProperty Name="stamp" ColumnName="stamp" />
+                <ScalarProperty Name="item_id" ColumnName="item_id" />
+                <ScalarProperty Name="FIO" ColumnName="FIO" />
+                <ScalarProperty Name="Count" ColumnName="Count" />
+                <ScalarProperty Name="Percent" ColumnName="Percent" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="storage_using_by_doctors">
+            <EntityTypeMapping TypeName="polyclinicModel.storage_using_by_doctors">
+              <MappingFragment StoreEntitySet="storage_using_by_doctors">
+                <ScalarProperty Name="stamp" ColumnName="stamp" />
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="FIO" ColumnName="FIO" />
+                <ScalarProperty Name="Item_name" ColumnName="Item name" />
+                <ScalarProperty Name="Count" ColumnName="Count" />
+                <ScalarProperty Name="Percent" ColumnName="Percent" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="del_doctor_visits" FunctionName="Хранилище polyclinicModel.del_doctor_visits" />
+          <FunctionImportMapping FunctionImportName="del_doctors" FunctionName="Хранилище polyclinicModel.del_doctors" />
+          <FunctionImportMapping FunctionImportName="del_patients" FunctionName="Хранилище polyclinicModel.del_patients" />
+          <FunctionImportMapping FunctionImportName="del_placing_in_hospital" FunctionName="Хранилище polyclinicModel.del_placing_in_hospital" />
+          <FunctionImportMapping FunctionImportName="del_storage" FunctionName="Хранилище polyclinicModel.del_storage" />
+          <FunctionImportMapping FunctionImportName="del_storage_using" FunctionName="Хранилище polyclinicModel.del_storage_using" />
+          <FunctionImportMapping FunctionImportName="ins_doctor_visits" FunctionName="Хранилище polyclinicModel.ins_doctor_visits" />
+          <FunctionImportMapping FunctionImportName="ins_doctors" FunctionName="Хранилище polyclinicModel.ins_doctors" />
+          <FunctionImportMapping FunctionImportName="ins_patients" FunctionName="Хранилище polyclinicModel.ins_patients" />
+          <FunctionImportMapping FunctionImportName="ins_placing_in_hospital" FunctionName="Хранилище polyclinicModel.ins_placing_in_hospital" />
+          <FunctionImportMapping FunctionImportName="ins_storage" FunctionName="Хранилище polyclinicModel.ins_storage" />
+          <FunctionImportMapping FunctionImportName="ins_storage_using" FunctionName="Хранилище polyclinicModel.ins_storage_using" />
+          <FunctionImportMapping FunctionImportName="me_proc" FunctionName="Хранилище polyclinicModel.me_proc" />
+          <FunctionImportMapping FunctionImportName="test_proc" FunctionName="Хранилище polyclinicModel.test_proc">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="polyclinicModel.test_proc_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="FIO" ColumnName="FIO" />
+                <ScalarProperty Name="phone" ColumnName="phone" />
+                <ScalarProperty Name="date_birth" ColumnName="date_birth" />
+                <ScalarProperty Name="address" ColumnName="address" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="upd_doctor_visits" FunctionName="Хранилище polyclinicModel.upd_doctor_visits" />
+          <FunctionImportMapping FunctionImportName="upd_doctors" FunctionName="Хранилище polyclinicModel.upd_doctors" />
+          <FunctionImportMapping FunctionImportName="upd_patients" FunctionName="Хранилище polyclinicModel.upd_patients" />
+          <FunctionImportMapping FunctionImportName="upd_placing_in_hospital" FunctionName="Хранилище polyclinicModel.upd_placing_in_hospital" />
+          <FunctionImportMapping FunctionImportName="upd_storage" FunctionName="Хранилище polyclinicModel.upd_storage" />
+          <FunctionImportMapping FunctionImportName="upd_storage_using" FunctionName="Хранилище polyclinicModel.upd_storage_using" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,115 @@
+﻿@model IEnumerable<FirstTry.storage_using>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@{ string ShowButton(string up, string down)
+    {
+        if (ViewData["sortOrder"] != null)
+        {
+
+            if (ViewData["sortOrder"].ToString() == up)
+            {
+                return HttpUtility.HtmlEncode("↑");
+            }
+            else if (ViewData["sortOrder"].ToString() == down)
+            {
+                return HttpUtility.HtmlEncode("↓");
+            }
+        }
+        return "";
+    }
+}
+
+@{ string GetSearchString(int index)
+    {
+        if (ViewBag.SearchStrings != null)
+        {
+            return ViewBag.SearchStrings[index];
+        }
+        return string.Empty;
+    }
+}
+
+@{ string GetAgregateSearchString()
+    {
+        if (ViewBag.SearchStrings != null)
+        {
+            return (ViewBag.SearchStrings as string[]).Aggregate((sum, next) => sum + '%' + next);
+        }
+        return string.Empty;
+    }
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+@using (Html.BeginForm("", "StorageUsing", FormMethod.Get, new { id = "searchform" }))
+{
+
+}
+
+<input type="text" name="sortOrder" form="searchform" value="@ViewData["sortOrder"]" class="hidden" />
+
+<table class="table">
+    <tr>
+        <td>
+            <input type="text" name="SearchStrings" form="searchform" style="width: 100%" value="@GetSearchString(0)" />
+        </td>
+        <td>
+            <input type="text" name="SearchStrings" form="searchform" style="width: 100%" value="@GetSearchString(1)" />
+        </td>
+        <td>
+            <input type="text" name="SearchStrings" form="searchform" style="width: 100%" value="@GetSearchString(2)" />
+        </td>
+        <td>
+            <input type="text" name="SearchStrings" form="searchform" style="width: 100%" value="@GetSearchString(3)" />
+        </td>
+        <td>
+            <input type="submit" value="Search" form="searchform" />
+        </td>
+    </tr>
+    <tr>
+        <th>
+            @Html.ActionLink(@Html.DisplayNameFor(model => model.count).ToString() + @ShowButton("count", "count_desc"), "Index", new { sortOrder = ViewBag.countSortParm, SearchStrings = GetAgregateSearchString() })
+        </th>
+        <th>
+            @Html.ActionLink(@Html.DisplayNameFor(model => model.date).ToString() + @ShowButton("date", "date"), "Index", new { sortOrder = ViewBag.dateSortParm, SearchStrings = GetAgregateSearchString() })
+        </th>
+        <th>
+            @Html.ActionLink(@Html.DisplayNameFor(model => model.doctors.FIO).ToString() + " лікаря" + @ShowButton("docFIO", "docFIO_desc"), "Index", new { sortOrder = ViewBag.docFIOSortParm, SearchStrings = GetAgregateSearchString() })
+        </th>
+        <th>
+            @Html.ActionLink(@Html.DisplayNameFor(model => model.storage.item_name).ToString() + @ShowButton("stItem_name", "stItem_name_desc"), "Index", new { sortOrder = ViewBag.stItem_nameSortParm, SearchStrings = GetAgregateSearchString() })
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.count)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.doctors.FIO)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.storage.item_name)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.id }) |
+                @Html.ActionLink("Details", "Details", new { id = item.id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.id })
+            </td>
+        </tr>
+    }
+
+</table>
