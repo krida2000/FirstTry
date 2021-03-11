@@ -1,0 +1,45 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. 
+on:
+  push:
+    branches:
+     - master
+
+jobs:
+ build:
+   runs-on: ubuntu-latest
+   steps:
+     - name: Checkout
+       uses: actions/checkout@v2.3.4
+     - uses: actions/setup-java@v1
+       with:
+         java-version: "12.x"
+
+     - uses: subosito/flutter-action@v1
+       with:
+         channel: "stable"
+
+     - run: flutter pub get
+
+     - run: flutter analyze
+
+     - run: flutter test
+
+     - run: flutter build apk --release
+
+     - uses: actions/upload-artifact@v1
+       with:
+         name: APK for QA
+         path: build/app/outputs/flutter-apk/app-release.apk
+     
+     - name: Firebase App Distribution
+       uses: wzieba/Firebase-Distribution-Github-Action@v1.3.2
+       with:
+          appId: ${{ secrets.FIREBASE_ANDROID_PROD_APP_ID }}
+          token: ${{ secrets.FIREBASE_TOKEN }}
+          groups: testers
+          file: build/app/outputs/flutter-apk/app-release.apk
+          debug: true
